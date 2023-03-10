@@ -1559,6 +1559,7 @@ StartAutoVacWorker(void)
 			break;
 #endif
 		default:
+			fprintf(stderr, "AJR -- spawning AV worker PID: %i\n", worker_pid);
 			return (int) worker_pid;
 	}
 
@@ -3263,6 +3264,7 @@ autovacuum_do_vac_analyze(autovac_table *tab, BufferAccessStrategy bstrategy)
 		"", tab->at_relname);
 #endif
 
+	fprintf(stderr, "AJR -- analyzing in autovacuum_do_vac_analyze, PID: %i\n", MyProcPid);
 	vacuum(rel_list, &tab->at_params, bstrategy, true);
 }
 

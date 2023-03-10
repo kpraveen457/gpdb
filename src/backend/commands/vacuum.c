@@ -254,6 +254,7 @@ ExecVacuum(ParseState *pstate, VacuumStmt *vacstmt, bool isTopLevel, bool auto_s
 	params.log_min_duration = -1;
 
 	params.auto_stats = auto_stats;
+	fprintf(stderr, "AJR -- vacuuming in ExecVacuum, PID: %i\n", MyProcPid);
 
 	/* Now go through the common routine */
 	vacuum(vacstmt->rels, &params, NULL, isTopLevel);

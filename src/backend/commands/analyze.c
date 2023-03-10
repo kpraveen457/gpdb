@@ -209,6 +209,8 @@ analyze_rel(Oid relid, RangeVar *relation,
 {
 	bool		optimizerBackup;
 
+	fprintf(stderr, "AJR -- analyzing in analyze_rel, PID: %i\n", MyProcPid);
+
 	/*
 	 * Temporarily disable ORCA because it's slow to start up, and it
 	 * wouldn't come up with any better plan for the simple queries that

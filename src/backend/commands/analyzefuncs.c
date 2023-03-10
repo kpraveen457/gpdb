@@ -136,6 +136,8 @@ gp_acquire_sample_rows(PG_FUNCTION_ARGS)
 		this_rangevar = makeRangeVar(get_namespace_name(onerel->rd_rel->relnamespace),
 									 pstrdup(RelationGetRelationName(onerel)),
 									 -1);
+
+		fprintf(stderr, "AJR -- analyzing in gp_acquire_sample_rows, PID: %i\n", MyProcPid);
 		analyze_rel(relOid, this_rangevar, &params, NULL,
 					true, GetAccessStrategy(BAS_VACUUM), ctx);
 
