@@ -60,7 +60,7 @@ def is_python_program(name):
 
 
 py_program_names = [name for name in program_names if is_python_program(name)]
-print("building standalone management utils...", py_program_names)
+print("building standalone management utils....", py_program_names)
 
 setup(
     name="gpmgmt",
