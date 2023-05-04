@@ -635,7 +635,8 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
             "config": """sdw1|20000|/primary/gpseg0 sdw3|20001|/primary/gpseg5
                       sdw1|20001|/primary/gpseg1 sdw1|40001|/primary/gpseg_new
                       sdw3|20000|/primary/gpseg4
-                      sdw4|20000|/primary/gpseg6 sdw4|20000|/primary/gpseg6"""
+                      sdw4|20000|/primary/gpseg6 sdw4|20000|/primary/gpseg6
+                      sdw1|10.0.34.2|20000|/primary/gpseg0 sdw3|10.0.34.5|20001|/primary/gpseg5"""
         },
         {
             "name": "6X_web_doc",
@@ -680,7 +681,7 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
                 """sdw1|20000|/mirror/gpseg0 sdw3|20001|/mirror/gpseg5
                    sdw1|20000 sdw3|20001|/mirror/gpseg5""",
             "expected":
-                "line 2 of file .*: expected 3 parts on failed segment group, obtained 2"
+                "line 2 of file .*: expected 3 or 4 parts on failed segment group, obtained 2"
         },
         {
             "name":
@@ -688,7 +689,7 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
             "config": """sdw1|20000|/mirror/gpseg0 sdw3|20001|/mirror/gpseg5
                          sdw2|50001|/data2/mirror/gpseg1 sdw4|50001""",
             "expected":
-                "line 2 of file .*: expected 3 parts on new segment group, obtained 2"
+                "line 2 of file .*: expected 3 or 4 parts on new segment group, obtained 2"
         },
         {
             "name":
@@ -795,7 +796,25 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
             "name": "new_port_invalid",
             "config": """sdw2|50001|/data2/mirror/gpseg1 sdw4|new_invalid_port|relative/new/mirror/gpseg1""",
             "expected": "Invalid port on line 1"
-        }
+        },
+        {
+            "name":
+                "same_parts_not_present_in_group_1",
+            "config":
+                """sdw1|10.0.34.2|20000|/mirror/gpseg0 sdw3|10.0.34.5|20001|/mirror/gpseg5
+                   sdw1|20000mirror/gpseg0 sdw3|10.0.34.5|20001|/mirror/gpseg5""",
+            "expected":
+                "line 2 of file .*: expected either 3 or 4 parts on both segment group, obtained 3 on group1 and 4 on group2"
+        },
+        {
+            "name":
+                "same_parts_not_present_in_group_2",
+            "config":
+                """sdw1|10.0.34.2|20000|/mirror/gpseg0 sdw3|10.0.34.5|20001|/mirror/gpseg5
+                   sdw1|10.0.34.2|20000mirror/gpseg0 sdw3|20001|/mirror/gpseg5""",
+            "expected":
+                "line 2 of file .*: expected either 3 or 4 parts on both segment group, obtained 4 on group1 and 3 on group2"
+        },
     ]
 
     def test_parsing_should_fail(self):
@@ -816,9 +835,14 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
         for line in config_str.splitlines():
             lineno += 1
             groups = line.split()
-
-            address, port, datadir = groups[0].split('|')
+            parts = groups[0].split('|')
+            if len(parts) == 3:
+                address, port, datadir = parts
+                hostname = address
+            elif len(parts) == 4:
+                hostname, address, port, datadir = parts
             row = {
+                'failedHostname': hostname,
                 'failedAddress': address,
                 'failedPort': port,
                 'failedDataDirectory': datadir,
@@ -826,11 +850,17 @@ class RecoveryTripletsUserConfigFileParserTestCase(GpTestCase):
             }
 
             if len(groups) > 1:
-                address, port, datadir = groups[1].split('|')
+                parts2 = groups[1].split('|')
+                if len(parts) == 3:
+                    address2, port2, datadir2 = parts2
+                    hostname2 = address2
+                elif len(parts) == 4:
+                    hostname2, address2, port2, datadir2 = parts2
                 row.update({
-                    'newAddress': address,
-                    'newPort': port,
-                    'newDataDirectory': datadir
+                    'newHostname': hostname2,
+                    'newAddress': address2,
+                    'newPort': port2,
+                    'newDataDirectory': datadir2
                 })
 
             rows.append(row)
