@@ -38,6 +38,7 @@ class Global:
     opt['-J'] = '=:'
     opt['-r'] = False
     opt['-a'] = False
+    opt['-c'] = False
     filePath = []
 
 
@@ -63,7 +64,7 @@ def print_version():
 #############
 def parseCommandLine():
     try:
-        (options, args) = getopt.getopt(sys.argv[1:], '?vraJ:p:u:h:f:', ['version'])
+        (options, args) = getopt.getopt(sys.argv[1:], '?cvraJ:p:u:h:f:', ['version'])
     except Exception as e:
         usage('Error: ' + str(e))
 
@@ -81,6 +82,8 @@ def parseCommandLine():
         elif (switch == '-r'):
             GV.opt[switch] = True
         elif (switch == '-a'):
+            GV.opt[switch] = True
+        elif (switch == '-c'):
             GV.opt[switch] = True
         elif (switch == '--version'):
             print_version()
@@ -116,6 +119,7 @@ try:
     rsync = 'rsync -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no"'
     if GV.opt['-r']:  rsync += ' -r'
     if GV.opt['-a']:  rsync += ' -a'
+    if GV.opt['-c']:  rsync += ' -c'
 
     proc = []
     for peer in GV.opt['-h']:

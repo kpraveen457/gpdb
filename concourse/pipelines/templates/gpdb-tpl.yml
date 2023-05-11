@@ -46,6 +46,9 @@
                        'use_concourse_cluster': true},
                       {'name': 'gpstop',
                        'use_concourse_cluster': true},
+                      { 'name': 'gpsync',
+                        'use_concourse_cluster': true,
+                        'additional_ccp_vars': 'number_of_nodes: 3'},
                     ] %}
 
 ## ======================================================================

@@ -4012,3 +4012,22 @@ def impl(context):
         else:
             context.stdout_message
             raise Exception("segment process not running in execute mode for DBID:{0}".format(dbid))
+
+
+
+@then('check {file} "{action}" be copied from {src_host} to {target_host}')
+def impl(context, file, action, src_host, target_host):
+    """
+    Check the differences in the files on source and destination hosts, based on the action provided check that the
+    file content is updated from source to destination hosts
+    """
+    cmd_str = "diff <(ssh {0} cat {1}) <(ssh {2} cat {1})".format(src_host, file, target_host)
+    cmd = Command("get the file diff", cmdStr=cmd_str, ctxt=REMOTE, remoteHost=src_host)
+    cmd.run()
+    rc = cmd.get_return_code()
+    if action == 'could not' and rc == 0:
+        raise Exception('successfully copied file from {0} to {1} without -c flag'.format(src_host, target_host))
+    if action == 'could' and rc == 1:
+        raise Exception('failed to copy file from {0} to {1} with -c flag'.format(src_host, target_host))
+
+        

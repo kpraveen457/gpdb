@@ -4,9 +4,9 @@ Copies files between multiple hosts at once.
 
 ## <a id="section2"></a>Synopsis 
 
-```
+``` 
 gpsync { -f <hostfile_gpssh> | -h <hostname> [-h <hostname> ...] } 
-      [-a][-J <character>] [-v] [[<user>@]<hostname>:]<file_to_copy> [...]
+      [-a] [-r] [-c] [-J <character>] [-v] [[<user>@]<hostname>:]<file_to_copy> [...]
       [[<user>@]<hostname>:]<copy_to_path> 
 
 gpsync -? 
@@ -42,6 +42,12 @@ Before using `gpsync`, you must have a trusted host setup between the hosts invo
 
 -a 
 :   Sync source and target directories in archival mode.
+
+-r
+:    Copies data recursively (but don’t preserve timestamps and permission while transferring data).
+
+-c
+:   Copy the files that have identical sizes and modification times, skip to copy files based on checksum, not modification time and size.
 
 -J character
 :   The `-J` option allows you to specify a single character to substitute for the hostname in the `copy from` and `copy to` destination strings. If `-J` is not specified, the default substitution character is an equal sign \(`=`\).

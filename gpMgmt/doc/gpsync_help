@@ -7,7 +7,7 @@ SYNOPSIS
 *****************************************************
 
 gpsync { -f <hostfile_gpssh> | -h <hostname> [-h <hostname> ...] } 
-[-a] [-J <character>] [-v] [[<user>@]<hostname>:]<file_to_copy> [...]
+[-a] [-r] [-c] [-J <character>] [-v] [[<user>@]<hostname>:]<file_to_copy> [...]
 [[<user>@]<hostname>:]<copy_to_path>
 
 gpsync -? 
@@ -74,6 +74,15 @@ specify multiple host names.
 -a (archive mode)
 
 Sync source and target directories in archive mode.
+
+-r
+
+Copies data recursively (but don’t preserve timestamps and permission while transferring data).
+
+-c
+
+Copy the files that have identical sizes and modification times,
+skip to copy files based on checksum, not modification time and size.
 
 -J <character>
 
