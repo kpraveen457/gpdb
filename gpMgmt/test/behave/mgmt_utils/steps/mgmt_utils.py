@@ -1392,7 +1392,7 @@ def stop_segments_immediate(context, where_clause):
 @when('user can start transactions')
 @then('user can start transactions')
 def impl(context):
-    wait_for_unblocked_transactions(context)
+    wait_for_unblocked_transactions(context, 600)
 
 
 @given('the environment variable "{var}" is set to "{val}"')
