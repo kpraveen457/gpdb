@@ -16,6 +16,7 @@ Usage: gpcheckcat [<option>] [dbname]
     -R test | 'test1, test2' : run this particular test(s) (quoted, comma separated list for multiple tests)
     -s test | 'test1, test2' : skip this particular test(s) (quoted, comma separated list for multiple tests)
     -C catname               : run cross consistency, FK and ACL tests for this catalog table
+    -x                       : set session level GUCs
 
     Test subset options are mutually exclusive, use only one of '-R', '-s', or '-C'.
 
@@ -331,8 +332,8 @@ def connect(user=None, password=None, host=None, port=None,
     options = '-c search_path='
     if utilityMode:
         options += ' -c gp_role=utility'
-    for x in GV.opt['-x']:
-        options += ' -c {}'.format(x)
+    for val in GV.opt['-x']:
+        options += ' -c {}'.format(val)
 
     if not user: user = GV.opt['-U']
     if not password: password = GV.opt['-P']
