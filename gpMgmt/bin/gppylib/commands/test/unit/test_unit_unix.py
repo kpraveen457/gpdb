@@ -65,5 +65,29 @@ class UnixCommandTestCase(GpTestCase):
         self.subject.logger.info.assert_called_once_with('Terminating processes for segment /data/primary/gpseg0')
         self.subject.logger.error.assert_called_once_with('Failed to kill process 789 for segment /data/primary/gpseg0: Kill Error')
 
+
+    @patch('gppylib.commands.unix.findCmdInPath', return_value='/usr/bin/rsync')
+    @patch('gppylib.commands.unix.check_cmd_version', return_value='rsync version 3.2.7')
+    @patch('gppylib.commands.unix.parse_version', side_effect=['3.2.7', '3.1.0'])
+    def test_compare_rsync_version(self, mock_parse_version, mock_check_cmd_version, mock_findCmdInPath):
+
+        self.subject.compare_rsync_version()
+
+        mock_findCmdInPath.assert_called_once_with('rsync')
+        mock_check_cmd_version.assert_called_once_with('/usr/bin/rsync')
+        mock_parse_version.assert_has_calls([call('3.2.7'), call('3.1.0')])
+
+    @patch('gppylib.commands.unix.findCmdInPath', return_value='/usr/bin/rsync')
+    @patch('gppylib.commands.unix.check_cmd_version', return_value='rsync version 2.6.9')
+    @patch('gppylib.commands.unix.parse_version', side_effect=['2.6.9', '3.1.0'])
+    def test_compare_rsync_version_exception(self, mock_parse_version, mock_check_cmd_version, mock_findCmdInPath):
+        with self.assertRaises(Exception) as e:
+            self.subject.compare_rsync_version()
+
+        self.assertEqual(str(e.exception),
+                         "Rsync current version 2.6.9 does not meet the required version 3.1.0 or above for utilizing"
+                         "differential recovery. Kindly update rsync to 3.1.0 or above version")
+
+
 if __name__ == '__main__':
     run_tests()

@@ -462,7 +462,7 @@ def impl(context, logdir):
             with open(recovery_progress_file, 'r') as fp:
                 context.recovery_lines = fp.readlines()
             for line in context.recovery_lines:
-                recovery_type, dbid, progress = line.strip().split(':', 2)
+                recovery_type, dbid, progress = line.strip().split(':')[:3]
                 progress_pattern = re.compile(get_recovery_progress_pattern(recovery_type))
                 # TODO: assert progress line in the actual hosts bb/rewind progress file
                 if re.search(progress_pattern, progress) and dbid.isdigit() and recovery_type in ['full', 'differential', 'incremental']:
