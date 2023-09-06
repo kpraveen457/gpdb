@@ -83,10 +83,10 @@ class GpCheckPerf(GpTestCase):
         self.subject.main()
         mock_gpscp.assert_called_with(src, target)
 
-    def test_gpsync_failed_to_copy(self):
+    @patch('gpcheckperf.getHostList', return_value=['localhost', "invalid_host"])
+    def test_gpsync_failed_to_copy(self, mock_hostlist):
         src = '%s/lib/multidd' % os.path.abspath(os.path.dirname(__file__) + "/../../../")
         target = '=:tmp/'
-        self.subject.GV.opt['-h'] = ['localhost', "invalid_host"]
         with self.assertRaises(SystemExit) as e:
             self.subject.gpsync(src, target)
         self.assertIn('[Error] command failed for host:invalid_host', e.exception.code)
