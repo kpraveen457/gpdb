@@ -666,10 +666,11 @@ def setupNetPerfTest():
     print '-------------------'
 
     hostlist = ssh_utils.HostList()
-    for h in GV.opt['-h']:
-        hostlist.add(h)
     if GV.opt['-f']:
         hostlist.parseFile(GV.opt['-f'])
+    else:
+        for h in GV.opt['-h']:
+            hostlist.add(h)
 
     h = hostlist.get()
     if len(h) == 0:
@@ -1000,13 +1001,11 @@ def getHostList():
     :return: returns a list of hosts
     """
     hostlist = ssh_utils.HostList()
-
     if GV.opt['-f']:
         hostlist.parseFile(GV.opt['-f'])
     else:
         for h in GV.opt['-h']:
             hostlist.add(h)
-
 
     try:
         hostlist.checkSSH()

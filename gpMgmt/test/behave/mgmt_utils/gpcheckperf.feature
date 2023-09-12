@@ -134,7 +134,7 @@ Feature: Tests for gpcheckperf
     Given the user runs command "echo -e "cdw\nsdw1" > /tmp/hostfile_gpchecknet"
     When  the user runs "gpcheckperf -f /tmp/hostfile_gpchecknet -d /data/gpdata/ -r n"
     Then  gpcheckperf should return a return code of 0
-    And   the following lines should appear exactly once to stdout
+    And   gpcheckperf should print the following lines 1 times to stdout
       """
       cdw -> sdw1
       sdw1 -> cdw

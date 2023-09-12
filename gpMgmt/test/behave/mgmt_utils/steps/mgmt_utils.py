@@ -4266,15 +4266,15 @@ def impl(context, table, dbname, count):
         raise Exception(
             "%s table in %s has %d rows, expected %d rows." % (table, dbname, sum(current_row_count), int(count)))
 
-@then('the following lines should appear exactly once to stdout')
-def impl(context):
+@then('{command} should print the following lines {num} times to stdout')
+def impl(context, command, num):
     """
-    to verify that each pattern occurs only once in the output
+    Verify that each pattern occurs a specific number of times in the output.
     """
     expected_lines = context.text.strip().split('\n')
     for expected_pattern in expected_lines:
         match_count = len(re.findall(re.escape(expected_pattern), context.stdout_message))
-        if match_count > 1:
+        if match_count != int(num):
             raise Exception(
-                "Pattern %s matched more than once" % expected_pattern)
+                "Expected %s to occur %s times but Found %d times" .format(expected_pattern, num, match_count))
 
