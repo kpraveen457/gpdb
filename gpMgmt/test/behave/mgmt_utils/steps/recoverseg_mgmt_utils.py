@@ -761,3 +761,10 @@ def get_host_address(hostname):
     return host_address[0]
 
 
+@then('verify deletion of orphaned directory of the dropped database')
+def impl(context):
+    db_data_dir = "{0}/base/{1}".format(context.seg_datadir, context.db_oid)
+    if os.path.exists(db_data_dir):
+        raise Exception('Orphaned directory of dropped database: {0} exists' .format(context.db_name))
+
+

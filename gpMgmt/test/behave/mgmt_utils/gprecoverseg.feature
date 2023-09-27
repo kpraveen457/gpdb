@@ -1965,3 +1965,22 @@ Feature: gprecoverseg tests
         And user can start transactions
        Then the row count of table test_recoverseg in "postgres" should be 2000
        And the cluster is recovered in full and rebalanced
+
+
+
+  @demo_cluster
+  Scenario: Cleanup orphaned directory of dropped database after differential recovery
+      Given the database is running
+        And all the segments are running
+        And the segments are synchronized
+        And the user runs psql with "-c 'CREATE DATABASE test_orphan_dir'" against database "template1"
+        And save the information of the database "test_orphan_dir"
+        And user immediately stops all mirror processes for content 0
+        And the user waits until mirror on content 0 is down
+        And the user runs psql with "-c 'DROP DATABASE test_orphan_dir'" against database "template1"
+       When the user runs "gprecoverseg -av --differential"
+       Then gprecoverseg should return a return code of 0
+        And the user waits until mirror on content 0 is up
+       Then verify deletion of orphaned directory of the dropped database
+        And the cluster is rebalanced
+
