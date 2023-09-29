@@ -1429,7 +1429,6 @@ def stop_segments_immediate(context, where_clause):
 
     segments = filter(where_clause, gparray.getDbList())
     for seg in segments:
-        context.seg_datadir = seg.getSegmentDataDirectory()
         # For demo_cluster tests that run on the CI gives the error 'bash: pg_ctl: command not found'
         # Thus, need to add pg_ctl to the path when ssh'ing to a demo cluster.
         subprocess.check_call(['ssh', seg.getSegmentHostName(),
@@ -4334,9 +4333,8 @@ def impl(context, command, num):
 @given('save the information of the database "{dbname}"')
 def impl(context, dbname):
     with dbconn.connect(dbconn.DbURL(dbname='template1'), unsetSearchPath=False) as conn:
-        query = """SELECT datname,oid  FROM pg_database where datname='{0}';""" .format(dbname)
+        query = """SELECT datname,oid  FROM pg_database WHERE datname='{0}';""" .format(dbname)
         datname, oid = dbconn.execSQLForSingletonRow(conn, query)
         context.db_name = datname
         context.db_oid = oid
-
 
