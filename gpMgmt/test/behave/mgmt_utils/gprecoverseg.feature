@@ -2328,3 +2328,25 @@ Feature: gprecoverseg tests
         And user can start transactions
        Then the row count of table test_recoverseg in "postgres" should be 2000
        And the cluster is recovered in full and rebalanced
+
+
+  @demo_cluster
+  @concourse_cluster @test_1
+  Scenario: gpstate track differential recovery
+    Given the database is running
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And user immediately stops all primary processes for content 0,1,2
+    And the user waits until mirror on content 0,1,2 is down
+    And user can start transactions
+    And sql "DROP TABLE IF EXISTS test_recoverseg; CREATE TABLE test_recoverseg AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
+    And sql "DROP TABLE IF EXISTS test_recoverseg_1; CREATE TABLE test_recoverseg_1 AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
+    When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
+    Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
+    When the user runs "gpstate -e"
+    Then gpstate should print "Segments in recovery" to stdout
+    And gpstate output contains "differential,differential,differential" entries for mirrors of content 0,1,2
+        And gpstate output looks like
+            | Segment | Port   | Recovery type  | Stage                                       | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 5                   | ^\d{1,3}(,\d{3})*$     | \d+%                   |
+            | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 6 for oid 20516  | ^\d{1,3}(,\d{3})*$     | \d+%                |
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster

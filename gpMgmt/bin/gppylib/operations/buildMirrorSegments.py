@@ -478,6 +478,38 @@ class GpMirrorListToBuild:
             cmd_desc = "tail the last line of the file"
             if isDifferentialRecovery:
                 # For differential recovery, use sed to filter lines with specific patterns to avoid race condition.
+
+                # Set the option to make the pipeline fail if any command within it fails;
+                # Example: set -o pipefail;
+
+                # Create or update a file with the name specified in {0};
+                # Example: touch -a 'rsync.20230926_145006.dbid2.out';
+
+                # Display the last 3 lines of the file specified in {0} and pass them to the next command;
+                # Example: If {0} contains:
+                # receiving incremental file list
+                #
+                #               0   0%    0.00kB/s    0:00:00   :Syncing pg_control file of dbid 5
+                #           8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control file of dbid 5
+                #           8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control file of dbid 5
+                #
+                # This command will pass the above lines (excluding the first) to the next command.
+
+                # Process the output using sed (stream editor), printing lines that match certain patterns;
+                # Example: If the output is "          8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control file of dbid 5",
+                # this command will print:
+                # 8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control file of dbid 5
+                #
+                # It will print lines that contain ":Syncing.*dbid", "error:", or "total".
+
+                # Translate carriage return characters to newline characters;
+                # Example: If the output contains '\r' characters, they will be replaced with '\n'.
+
+                # Display only the last line of the processed output.
+                # Example: If the output after the previous command is:
+                # 8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control file of dbid 5
+                # This command will output the same line.
+
                 cmd_str = (
                     "set -o pipefail; touch -a {0}; tail -3 {0} | sed -n -e '/:Syncing.*dbid/p; /error:/p; /total/p' | tr '\\r' '\\n' | tail -1"
                     .format(pipes.quote(progressFile))

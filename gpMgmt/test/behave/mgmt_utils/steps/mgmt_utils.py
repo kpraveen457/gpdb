@@ -438,6 +438,7 @@ def impl(context, logdir):
     num_retries = 6000
     log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
     recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    print(recovery_progress_file)
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
@@ -455,6 +456,7 @@ def impl(context, logdir):
     num_retries = 6000
     log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
     recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    print(recovery_progress_file)
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
