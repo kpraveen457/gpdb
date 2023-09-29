@@ -140,5 +140,5 @@ def impl(context):
         fp.write(
             "differential:5:     16,454,866   4%   16.52MB/s    0:00:00 (xfr#216, ir-chk=9669/9907) :Syncing pg_data "
             "of dbid 5\n")
-        fp.write("differential:6:          8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing pg_control "
-                 "file of dbid 6")
+        fp.write("differential:6:          8,192 100%    7.81MB/s    0:00:00 (xfr#1, to-chk=0/1) :Syncing tablespace of "
+                 "dbid 6 for oid 20516")

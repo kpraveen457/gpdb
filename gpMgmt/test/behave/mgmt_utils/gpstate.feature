@@ -656,9 +656,9 @@ Feature: gpstate tests
         Then gpstate should print "Segments in recovery" to stdout
         And gpstate output contains "differential,differential" entries for mirrors of content 0,1
         And gpstate output looks like
-            | Segment | Port   | Recovery type  | Stage                              | Completed bytes \(kB\) | Percentage completed |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 5          | 16,454,866             | 4%                   |
-            | \S+     | [0-9]+ | differential   | Syncing pg_control file of dbid 6  | 8,192                  | 100%                 |
+            | Segment | Port   | Recovery type  | Stage                                       | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 5                   | 16,454,866             | 4%                   |
+            | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 6 for oid 20516  | 8,192                  | 100%                 |
         And all files in gpAdminLogs directory are deleted
         And the background pid is killed on "coordinator" segment
         And the gprecoverseg lock directory is removed

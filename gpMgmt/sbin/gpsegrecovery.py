@@ -6,7 +6,7 @@ from contextlib import closing
 
 from gppylib.recoveryinfo import RecoveryErrorType
 from gppylib.commands.pg import PgBaseBackup, PgRewind, PgReplicationSlot
-from gppylib.commands.unix import Rsync,compare_rsync_version
+from gppylib.commands.unix import Rsync
 from recovery_base import RecoveryBase, set_recovery_cmd_results
 from gppylib.commands.base import Command, LOCAL
 from gppylib.commands.gp import SegmentStart
@@ -105,8 +105,6 @@ class DifferentialRecovery(Command):
         self.logger.info("Running differential recovery with progress output temporarily in {}".format(
             self.recovery_info.progress_file))
         self.error_type = RecoveryErrorType.DIFFERENTIAL_ERROR
-
-        compare_rsync_version()
 
         """ Drop replication slot 'internal_wal_replication_slot' """
         if self.replication_slot.slot_exists() and not self.replication_slot.drop_slot():
