@@ -460,6 +460,7 @@ def impl(context, logdir):
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
+            print("recovery file presnet -------------->>>>>>>>>>>")
             with open(recovery_progress_file, 'r') as fp:
                 context.recovery_lines = fp.readlines()
             for line in context.recovery_lines:

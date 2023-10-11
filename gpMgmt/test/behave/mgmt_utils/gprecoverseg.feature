@@ -2347,6 +2347,10 @@ Feature: gprecoverseg tests
     And gpstate output contains "differential,differential,differential" entries for mirrors of content 0,1,2
         And gpstate output looks like
             | Segment | Port   | Recovery type  | Stage                                       | Completed bytes \(kB\) | Percentage completed |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 5                   | ^\d{1,3}(,\d{3})*$     | \d+%                   |
-            | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 6 for oid 20516  | ^\d{1,3}(,\d{3})*$     | \d+%                |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 2                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 3                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 4                  | ([\d,]+)[ \t]          | \d+%                 |
+    Then gprecoverseg should return a return code of 0
+    And the user waits until saved async process is completed
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And the cluster is rebalanced
