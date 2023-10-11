@@ -2331,7 +2331,7 @@ Feature: gprecoverseg tests
 
 
   @demo_cluster
-  @concourse_cluster @test_1
+  @concourse_cluster @test_2
   Scenario: gpstate track differential recovery
     Given the database is running
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
