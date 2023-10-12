@@ -4191,3 +4191,6 @@ def impl(context, table, dbname, count):
         raise Exception(
             "%s table in %s has %d rows, expected %d rows." % (table, dbname, sum(current_row_count), int(count)))
 
+@then('wait for sometime')
+def impl(context):
+    time.sleep(1)
