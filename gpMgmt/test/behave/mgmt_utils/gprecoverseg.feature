@@ -65,8 +65,8 @@ Feature: gprecoverseg tests
         And gpstate output looks like
             | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
             | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 2                  | ([\d,]+)[ \t]          | \d+%                 |
-    Then gprecoverseg should return a return code of 0
     And the user waits until saved async process is completed
+    Then gprecoverseg should return a return code of 0
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And the cluster is rebalanced
 
@@ -88,8 +88,8 @@ Feature: gprecoverseg tests
         And gpstate output looks like
             | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
             | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 2 for oid \d   | ([\d,]+)[ \t]          | \d+%                 |
+    And the user waits until saved async process is complete
     Then gprecoverseg should return a return code of 0
-    And the user waits until saved async process is completed
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And the cluster is rebalanced
 
@@ -115,8 +115,8 @@ Feature: gprecoverseg tests
             | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 2                  | ([\d,]+)[ \t]          | \d+%                 |
             | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 3                  | ([\d,]+)[ \t]          | \d+%                 |
             | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 4                  | ([\d,]+)[ \t]          | \d+%                 |
-    Then gprecoverseg should return a return code of 0
     And the user waits until saved async process is completed
+    Then gprecoverseg should return a return code of 0
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And the cluster is rebalanced
 
