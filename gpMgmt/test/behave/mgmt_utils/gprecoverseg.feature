@@ -48,10 +48,54 @@ Feature: gprecoverseg tests
           And the segments are synchronized
           And the cluster is rebalanced
 
+  @demo_cluster
+  @concourse_cluster @test_1 @test_11
+  Scenario: gpstate track differential recovery for 1
+    Given the database is running
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And user immediately stops all primary processes for content 0
+    And the user waits until mirror on content 0 is down
+    And user can start transactions
+    And sql "DROP TABLE IF EXISTS test_recoverseg; CREATE TABLE test_recoverseg AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
+    When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
+    Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
+    When the user runs "gpstate -e"
+    Then gpstate should print "Segments in recovery" to stdout
+    And gpstate output contains "differential" entries for mirrors of content 0
+        And gpstate output looks like
+            | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 2                  | ([\d,]+)[ \t]          | \d+%                 |
+    Then gprecoverseg should return a return code of 0
+    And the user waits until saved async process is completed
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And the cluster is rebalanced
+
+
+    @demo_cluster
+  @concourse_cluster @test_1 @test_12
+  Scenario: gpstate track differential recovery for tablespace
+    Given the database is running
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And user immediately stops all primary processes for content 0
+    And the user waits until mirror on content 0 is down
+    And user can start transactions
+    And a tablespace is created with data
+    When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
+    Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
+    When the user runs "gpstate -e"
+    Then gpstate should print "Segments in recovery" to stdout
+    And gpstate output contains "differential" entries for mirrors of content 0
+        And gpstate output looks like
+            | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 2 for oid \d   | ([\d,]+)[ \t]          | \d+%                 |
+    Then gprecoverseg should return a return code of 0
+    And the user waits until saved async process is completed
+    And all files in gpAdminLogs directory are deleted on all hosts in the cluster
+    And the cluster is rebalanced
 
 
   @demo_cluster
-  @concourse_cluster @test_2
+  @concourse_cluster @test_1 @test_13
   Scenario: gpstate track differential recovery
     Given the database is running
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster

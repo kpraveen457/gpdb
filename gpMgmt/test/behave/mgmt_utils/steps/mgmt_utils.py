@@ -4193,4 +4193,4 @@ def impl(context, table, dbname, count):
 
 @then('wait for sometime')
 def impl(context):
-    time.sleep(1)
+    time.sleep(90)
