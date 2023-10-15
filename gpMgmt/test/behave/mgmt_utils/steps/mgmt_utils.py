@@ -4197,12 +4197,15 @@ def impl(context):
 
 
 @then('the user waits until all dbid present in  recovery_progress.file')
-def impl(context, logdir):
+def impl(context):
+    logdir = "gpAdminLogs"
     all_segments = GpArray.initFromCatalog(dbconn.DbURL()).getDbList()
     failed_segments = filter(lambda seg: seg.getSegmentStatus() == 'd', all_segments)
     dbids = []
     for seg in failed_segments:
-        dbids.append(seg.getSegmentDbId)
+        dbid = seg.getSegmentDbId
+        pat = "differential:"+dbid
+        dbids.append(pat)
     if len(dbids) == 0:
         raise Exception('Filed to get the dbids of down segment')
     attempt = 0

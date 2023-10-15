@@ -83,7 +83,6 @@ Feature: gprecoverseg tests
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
     Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
     Then the user waits until all dbid present in  recovery_progress.file
-    Then wait for sometime
     When the user runs "gpstate -e"
     Then gpstate should print "Segments in recovery" to stdout
     And gpstate output contains "differential,differential,differential" entries for mirrors of content 0,1,2
