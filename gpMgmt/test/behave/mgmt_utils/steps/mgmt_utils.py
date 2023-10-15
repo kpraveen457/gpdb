@@ -4194,3 +4194,31 @@ def impl(context, table, dbname, count):
 @then('wait for sometime')
 def impl(context):
     time.sleep(30)
+
+
+@then('the user waits until all dbid present in  recovery_progress.file')
+def impl(context, logdir):
+    all_segments = GpArray.initFromCatalog(dbconn.DbURL()).getDbList()
+    failed_segments = filter(lambda seg: seg.getSegmentStatus() == 'd', all_segments)
+    dbids = []
+    for seg in failed_segments:
+        dbids.append(seg.getSegmentDbId)
+    if len(dbids) == 0:
+        raise Exception('Filed to get the dbids of down segment')
+    attempt = 0
+    num_retries = 6000
+    log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
+    recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    while attempt < num_retries:
+        attempt += 1
+        if os.path.exists(recovery_progress_file):
+            with open(recovery_progress_file, 'r') as fp:
+                content = fp.read()
+                if dbids in content:
+                    return
+                time.sleep(0.1)
+
+        if attempt == num_retries:
+            raise Exception('Timed out after {} retries'.format(num_retries))
+
+

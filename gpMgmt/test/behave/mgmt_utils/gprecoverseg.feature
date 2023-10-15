@@ -82,6 +82,7 @@ Feature: gprecoverseg tests
     And sql "DROP TABLE IF EXISTS test_recoverseg_1; CREATE TABLE test_recoverseg_1 AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
     Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
+    Then the user waits until all dbid present in  recovery_progress.file
     Then wait for sometime
     When the user runs "gpstate -e"
     Then gpstate should print "Segments in recovery" to stdout
