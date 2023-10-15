@@ -4203,7 +4203,7 @@ def impl(context):
     failed_segments = filter(lambda seg: seg.getSegmentStatus() == 'd', all_segments)
     dbids = []
     for seg in failed_segments:
-        dbid = seg.getSegmentDbId
+        dbid = seg.getSegmentDbId()
         pat = "differential:"+dbid
         dbids.append(pat)
     if len(dbids) == 0:
