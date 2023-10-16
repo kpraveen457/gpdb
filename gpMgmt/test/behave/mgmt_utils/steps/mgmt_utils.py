@@ -4262,11 +4262,12 @@ def impl(context):
 @given('a tablespace is created with big data')
 def impl(context):
     name = "tablespace_db_outerspace"
-    path = tempfile.mkdtemp()
+    path = "/tmp/test_1"
+    os.mkdir(path)
     dbname = "tablespace_db_outerspace"
     with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
 
-        dbconn.execSQL(conn, "CREATE TABLESPACE %s" % (name))
+        dbconn.execSQL(conn, "CREATE TABLESPACE %s LOCATION '%s'" % (name, path))
         dbconn.execSQL(conn, "CREATE DATABASE %s TABLESPACE %s" % (dbname, name))
 
     conn = dbconn.connect(dbconn.DbURL(dbname=dbname), unsetSearchPath=False)
