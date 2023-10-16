@@ -4262,8 +4262,8 @@ def impl(context):
 @given('a tablespace is created with big data')
 def impl(context):
     name = "tablespace_db_outerspace"
-    path = "/tmp/test_1"
-    os.mkdir(path)
+    path = "/tmp/test_ts"
+    #os.mkdir(path)
     dbname = "tablespace_db_outerspace"
     with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
 
@@ -4278,3 +4278,9 @@ def impl(context):
     dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
     dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
     conn.close()
+
+
+@then('create directory path')
+def impl(context):
+    path = "/tmp/test_ts"
+    os.mkdir(path)
