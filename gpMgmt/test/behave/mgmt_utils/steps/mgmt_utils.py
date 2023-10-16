@@ -4256,3 +4256,24 @@ def impl(context):
             time.sleep(0.1)
         if attempt == num_retries:
             raise Exception('Timed out after {} retries'.format(num_retries))
+
+
+
+@given('a tablespace is created with big data')
+def impl(context):
+    name = "tablespace_db_outerspace"
+    path = tempfile.mkdtemp()
+    dbname = "tablespace_db_outerspace"
+    with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
+
+        dbconn.execSQL(conn, "CREATE TABLESPACE %s LOCATION '%s'" % (name, path))
+        dbconn.execSQL(conn, "CREATE DATABASE %s TABLESPACE %s" % (dbname, name))
+
+    conn = dbconn.connect(dbconn.DbURL(dbname=dbname), unsetSearchPath=False)
+    dbconn.execSQL(conn, "CREATE TABLE tbl (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl VALUES (GENERATE_SERIES(0, 100000000))")
+    dbconn.execSQL(conn, "CREATE TABLE tbl_1 (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
+    dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
+    conn.close()

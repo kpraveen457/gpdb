@@ -1,18 +1,18 @@
 @gprecoverseg
 Feature: gprecoverseg tests
 
-#    Scenario Outline: <scenario> recovery works with tablespaces
-#        Given the database is running
-#          And user stops all primary processes
-#          And user can start transactions
-#          And a tablespace is created with data
-#         When the user runs "gprecoverseg <args>"
-#         Then gprecoverseg should return a return code of 0
-#          And the segments are synchronized
-#          And verify replication slot internal_wal_replication_slot is available on all the segments
-#          And the tablespace is valid
-#          And the tablespace has valid symlink
-#          And the database segments are in execute mode
+    Scenario Outline: <scenario> recovery works with tablespaces
+        Given the database is running
+          And user stops all primary processes
+          And user can start transactions
+          And a tablespace is created with data
+         When the user runs "gprecoverseg <args>"
+         Then gprecoverseg should return a return code of 0
+          And the segments are synchronized
+          And verify replication slot internal_wal_replication_slot is available on all the segments
+          And the tablespace is valid
+          And the tablespace has valid symlink
+          And the database segments are in execute mode
 #
 #        Given another tablespace is created with data
 #         When the user runs "gprecoverseg -ra"
@@ -103,7 +103,7 @@ Feature: gprecoverseg tests
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And user immediately stops all primary processes for content 0
     And the user waits until mirror on content 0 is down
-    And a tablespace is created with data
+    And a tablespace is created with big data
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
     Then the user waits until all dbid present in  recovery_progress.file for tablespace
     When the user runs "gpstate -e"
