@@ -76,7 +76,6 @@ Feature: gprecoverseg tests
     Given the database is running
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And user immediately stops all primary processes for content 0,1,2
-    And the user waits until mirror on content 0,1,2 is down
     And user can start transactions
     And sql "DROP TABLE IF EXISTS test_recoverseg; CREATE TABLE test_recoverseg AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
     And sql "DROP TABLE IF EXISTS test_recoverseg_1; CREATE TABLE test_recoverseg_1 AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
@@ -102,7 +101,7 @@ Feature: gprecoverseg tests
     Given the database is running
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And user immediately stops all primary processes for content 0
-    And the user waits until mirror on content 0 is down
+    And user can start transactions
     And a tablespace is created with big data
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
     Then the user waits until all dbid present in  recovery_progress.file for tablespace

@@ -4266,7 +4266,7 @@ def impl(context):
     dbname = "tablespace_db_outerspace"
     with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
 
-        dbconn.execSQL(conn, "CREATE TABLESPACE %s'" % (name))
+        dbconn.execSQL(conn, "CREATE TABLESPACE %s" % (name))
         dbconn.execSQL(conn, "CREATE DATABASE %s TABLESPACE %s" % (dbname, name))
 
     conn = dbconn.connect(dbconn.DbURL(dbname=dbname), unsetSearchPath=False)
