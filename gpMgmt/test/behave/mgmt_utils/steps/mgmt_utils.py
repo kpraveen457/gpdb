@@ -4264,6 +4264,10 @@ def impl(context):
     name = "tablespace_db_outerspace"
     path = "/tmp/test_ts"
     #os.mkdir(path)
+    isExist = os.path.exists(path)
+    if not isExist:
+        os.mkdir(path)
+        time.sleep(60)
     dbname = "tablespace_db_outerspace"
     with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
 

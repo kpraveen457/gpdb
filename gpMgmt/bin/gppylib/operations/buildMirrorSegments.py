@@ -511,7 +511,7 @@ class GpMirrorListToBuild:
                 # This command will output the same line.
 
                 cmd_str = (
-                    "set -o pipefail; touch -a {0}; tail -3 {0} | sed -n -e '/:Syncing.*dbid/p; /error:/p; /total/p' | tr '\\r' '\\n' | tail -1"
+                    "set -o pipefail; touch -a {0}; tail -3 {0} | sed -n -e '/:Syncing.*dbid [0-9]/p; /error:/p; /total/p' | tr '\\r' '\\n' | tail -1"
                     .format(pipes.quote(progressFile))
                 )
             else:
