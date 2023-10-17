@@ -240,3 +240,28 @@ def impl(context):
     for tablespace in list(context.tablespaces.values()):
         tablespace.cleanup()
     context.tablespaces = {}
+
+
+
+@given('a tablespace is created with big data')
+def impl(context):
+    name = "tablespace_db_outerspace"
+    path = tempfile.mkdtemp()
+    #os.mkdir(path)
+    gparray = GpArray.initFromCatalog(dbconn.DbURL())
+    for host in gparray.getHostList():
+        run_cmd('ssh %s mkdir -p %s' % (pipes.quote(host), pipes.quote(path)))
+    dbname = "tablespace_db_outerspace"
+    with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
+
+        dbconn.execSQL(conn, "CREATE TABLESPACE %s LOCATION '%s'" % (name, path))
+        dbconn.execSQL(conn, "CREATE DATABASE %s TABLESPACE %s" % (dbname, name))
+
+    conn = dbconn.connect(dbconn.DbURL(dbname=dbname), unsetSearchPath=False)
+    dbconn.execSQL(conn, "CREATE TABLE tbl (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl VALUES (GENERATE_SERIES(0, 100000000))")
+    dbconn.execSQL(conn, "CREATE TABLE tbl_1 (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
+    dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
+    dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
+    conn.close()
