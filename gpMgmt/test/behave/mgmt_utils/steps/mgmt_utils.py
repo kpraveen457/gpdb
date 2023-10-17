@@ -463,6 +463,7 @@ def impl(context, logdir):
             with open(recovery_progress_file, 'r') as fp:
                 context.recovery_lines = fp.readlines()
             for line in context.recovery_lines:
+                print(line)
                 recovery_type, dbid, progress = line.strip().split(':')[:3]
                 print(progress)
                 progress_pattern = re.compile(get_recovery_progress_pattern(recovery_type))
@@ -4225,6 +4226,7 @@ def impl(context):
 def verify_elements_presence(filename, elements):
     with open(filename, 'r') as file:
         content = file.read()
+        print(content)
 
         for element in elements:
             if element not in content:
@@ -4234,6 +4236,7 @@ def verify_elements_presence(filename, elements):
 
 @then('the user waits until all dbid present in  recovery_progress.file for tablespace')
 def impl(context):
+    print("test print")
     logdir = "gpAdminLogs"
     all_segments = GpArray.initFromCatalog(dbconn.DbURL()).getDbList()
     failed_segments = filter(lambda seg: seg.getSegmentStatus() == 'd', all_segments)
@@ -4241,6 +4244,7 @@ def impl(context):
     for seg in failed_segments:
         dbid = seg.getSegmentDbId()
         pat = "Syncing tablespace of dbid {} for oid" .format(dbid)
+        print(pat)
         dbids.append(pat)
     if len(dbids) == 0:
         raise Exception('Filed to get the dbids of down segment')
