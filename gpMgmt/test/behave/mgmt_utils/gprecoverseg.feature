@@ -104,7 +104,6 @@ Feature: gprecoverseg tests
     And user can start transactions
     And a tablespace is created with big data
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
-    Then create directory path
     Then the user waits until all dbid present in  recovery_progress.file for tablespace
     When the user runs "gpstate -e"
     Then gpstate should print "Segments in recovery" to stdout
