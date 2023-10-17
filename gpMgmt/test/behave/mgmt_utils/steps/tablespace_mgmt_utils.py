@@ -245,13 +245,13 @@ def impl(context):
 
 @given('a tablespace is created with big data')
 def impl(context):
-    name = "tablespace_db_outerspace"
+    name = "tablespace_db_outerspace_2"
     path = tempfile.mkdtemp()
     #os.mkdir(path)
     gparray = GpArray.initFromCatalog(dbconn.DbURL())
     for host in gparray.getHostList():
         run_cmd('ssh %s mkdir -p %s' % (pipes.quote(host), pipes.quote(path)))
-    dbname = "tablespace_db_outerspace"
+    dbname = "tablespace_db_outerspace_2"
     with closing(dbconn.connect(dbconn.DbURL(), unsetSearchPath=False)) as conn:
 
         dbconn.execSQL(conn, "CREATE TABLESPACE %s LOCATION '%s'" % (name, path))
