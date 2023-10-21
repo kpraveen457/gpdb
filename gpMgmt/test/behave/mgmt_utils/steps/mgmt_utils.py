@@ -4264,6 +4264,47 @@ def impl(context):
 
 
 
+@then('the user waits until recovery_progress.file is created in {logdir} and verifies that all dbids progress with {stage} are present')
+def impl(context, logdir, stage):
+    all_segments = GpArray.initFromCatalog(dbconn.DbURL()).getDbList()
+    failed_segments = filter(lambda seg: seg.getSegmentStatus() == 'd', all_segments)
+    dbids = []
+    for seg in failed_segments:
+        dbid = seg.getSegmentDbId()
+        if stage == "tablespace":
+            pat = "Syncing tablespace of dbid {} for oid".format(dbid)
+        else:
+            pat = "differential:{}" .format(dbid)
+
+        print(pat)
+        dbids.append(pat)
+        print(dbids)
+    if len(dbids) == 0:
+        raise Exception('Filed to get the dbids of down segment')
+    attempt = 0
+    num_retries = 6000
+    log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
+    recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    while attempt < num_retries:
+        attempt += 1
+        if os.path.exists(recovery_progress_file):
+            if verify_elements_in_file(recovery_progress_file, dbids):
+                return
+            time.sleep(0.1)
+        if attempt == num_retries:
+            raise Exception('Timed out after {} retries'.format(num_retries))
+
+
+def verify_elements_in_file(filename, elements):
+    with open(filename, 'r') as file:
+        content = file.read()
+        print(content)
+        for element in elements:
+            if element not in content:
+                return False
+
+        return True
+
 @then('create directory path')
 def impl(context):
     path = "/tmp/test_ts"

@@ -217,7 +217,8 @@ class StartSegmentsOperation:
                                     resultOut.addSuccess(segment)
                                 else:
                                     resultOut.addFailure(segment, reasonStr, reasonCode)
-                if cmd.get_results().stderr is not None:
+                if cmd.get_results().stderr is not None and cmd.get_results().stderr.strip() != "":
+                    logger.info("black line new------------err:")
                     logger.info(cmd.get_results().stderr)
             else:
                 for segment in cmd.dblist:
