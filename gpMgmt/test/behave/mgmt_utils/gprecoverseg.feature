@@ -79,6 +79,7 @@ Feature: gprecoverseg tests
     And a tablespace is created with data
     And insert additional data into the tablespace
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
+    Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
     Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies that all dbids progress with tablespace are present
     When the user runs "gpstate -e"
     Then gpstate should print "Segments in recovery" to stdout
