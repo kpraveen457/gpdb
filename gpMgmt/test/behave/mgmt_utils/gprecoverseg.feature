@@ -99,16 +99,18 @@ Feature: gprecoverseg tests
     And user can start transactions
     And sql "DROP TABLE IF EXISTS test_recoverseg; CREATE TABLE test_recoverseg AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
     And sql "DROP TABLE IF EXISTS test_recoverseg_1; CREATE TABLE test_recoverseg_1 AS SELECT generate_series(1,100000000) AS a;" is executed in "postgres" db
+    And a tablespace is created with data
+    And insert additional data into the tablespace
     When the user asynchronously runs "gprecoverseg -a --differential" and the process is saved
     Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies that all dbids progress with pg_data are present
     When the user runs "gpstate -e"
     Then gpstate should print "Segments in recovery" to stdout
     And gpstate output contains "differential,differential,differential" entries for mirrors of content 0,1,2
         And gpstate output looks like
-            | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 6                  | ([\d,]+)[ \t]          | \d+%                 |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 7                  | ([\d,]+)[ \t]          | \d+%                 |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 8                  | ([\d,]+)[ \t]          | \d+%                 |
+            | Segment | Port   | Recovery type  | Stage                    | Stage                                                    | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 6|Syncing tablespace of dbid 6 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 7|Syncing tablespace of dbid 7 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 8|Syncing tablespace of dbid 8 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
     And the user waits until saved async process is completed
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And the cluster is rebalanced
