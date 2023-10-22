@@ -4285,13 +4285,12 @@ def impl(context, logdir, stage):
     num_retries = 6000
     log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
     recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
-    print(recovery_progress_file)
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
             if verify_elements_in_file(recovery_progress_file, dbids):
                 return
-            time.sleep(0.1)
+        time.sleep(0.1)
         if attempt == num_retries:
             raise Exception('Timed out after {} retries'.format(num_retries))
 
@@ -4299,12 +4298,11 @@ def impl(context, logdir, stage):
 def verify_elements_in_file(filename, elements):
     with open(filename, 'r') as file:
         content = file.read()
-        print(content)
         for element in elements:
-            if element in content:
-                return True
+            if element not in content:
+                return False
 
-        return False
+        return True
 
 @then('create directory path')
 def impl(context):
