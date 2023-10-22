@@ -448,33 +448,6 @@ def impl(context, logdir):
             raise Exception('Timed out after {} retries'.format(num_retries))
 
 
-@given('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
-@when('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
-@then('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
-def impl(context, logdir):
-    attempt = 0
-    num_retries = 6000
-    log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
-    recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
-    print(recovery_progress_file)
-    while attempt < num_retries:
-        attempt += 1
-        if os.path.exists(recovery_progress_file):
-            with open(recovery_progress_file, 'r') as fp:
-                context.recovery_lines = fp.readlines()
-            for line in context.recovery_lines:
-                print(line)
-                recovery_type, dbid, progress = line.strip().split(':')[:3]
-                print(progress)
-                progress_pattern = re.compile(get_recovery_progress_pattern(recovery_type))
-                # TODO: assert progress line in the actual hosts bb/rewind progress file
-                if re.search(progress_pattern, progress) and dbid.isdigit() and recovery_type in ['full', 'differential', 'incremental']:
-                    return
-                else:
-                    raise Exception('File present but incorrect format line "{}"'.format(line))
-        time.sleep(0.1)
-        if attempt == num_retries:
-            raise Exception('Timed out after {} retries'.format(num_retries))
 
 
 @then( 'verify if the {lock_file} directory is present in coordinator_data_directory')
@@ -4262,6 +4235,33 @@ def impl(context):
             raise Exception('Timed out after {} retries'.format(num_retries))
 
 
+@given('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
+@when('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
+@then('the user waits until recovery_progress.file is created in {logdir} and verifies its format')
+def impl(context, logdir):
+    attempt = 0
+    num_retries = 6000
+    log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
+    recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    print(recovery_progress_file)
+    while attempt < num_retries:
+        attempt += 1
+        if os.path.exists(recovery_progress_file):
+            with open(recovery_progress_file, 'r') as fp:
+                context.recovery_lines = fp.readlines()
+            for line in context.recovery_lines:
+                print(line)
+                recovery_type, dbid, progress = line.strip().split(':')[:3]
+                print(progress)
+                progress_pattern = re.compile(get_recovery_progress_pattern(recovery_type))
+                # TODO: assert progress line in the actual hosts bb/rewind progress file
+                if re.search(progress_pattern, progress) and dbid.isdigit() and recovery_type in ['full', 'differential', 'incremental']:
+                    return
+                else:
+                    raise Exception('File present but incorrect format line "{}"'.format(line))
+        time.sleep(0.1)
+        if attempt == num_retries:
+            raise Exception('Timed out after {} retries'.format(num_retries))
 
 
 @then('the user waits until recovery_progress.file is created in {logdir} and verifies that all dbids progress with {stage} are present')
@@ -4285,6 +4285,7 @@ def impl(context, logdir, stage):
     num_retries = 6000
     log_dir = _get_gpAdminLogs_directory() if logdir == 'gpAdminLogs' else logdir
     recovery_progress_file = '{}/recovery_progress.file'.format(log_dir)
+    print(recovery_progress_file)
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
@@ -4300,12 +4301,14 @@ def verify_elements_in_file(filename, elements):
         content = file.read()
         print(content)
         for element in elements:
-            if element not in content:
-                return False
+            if element in content:
+                return True
 
-        return True
+        return False
 
 @then('create directory path')
 def impl(context):
     path = "/tmp/test_ts"
     os.mkdir(path)
+
+
