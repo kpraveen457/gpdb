@@ -107,10 +107,10 @@ Feature: gprecoverseg tests
     Then gpstate should print "Segments in recovery" to stdout
     And gpstate output contains "differential,differential,differential" entries for mirrors of content 0,1,2
         And gpstate output looks like
-            | Segment | Port   | Recovery type  | Stage                    | Stage                                                    | Completed bytes \(kB\) | Percentage completed |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 6|Syncing tablespace of dbid 6 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 7|Syncing tablespace of dbid 7 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
-            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 8|Syncing tablespace of dbid 8 for oid \d+                  | ([\d,]+)[ \t]          | \d+%                 |
+            | Segment | Port   | Recovery type  | Stage                                       | Completed bytes \(kB\) | Percentage completed |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 6                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 7                  | ([\d,]+)[ \t]          | \d+%                 |
+            | \S+     | [0-9]+ | differential   | Syncing pg_data of dbid 8                 | ([\d,]+)[ \t]          | \d+%                 |
     And the user waits until saved async process is completed
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
     And the cluster is rebalanced
