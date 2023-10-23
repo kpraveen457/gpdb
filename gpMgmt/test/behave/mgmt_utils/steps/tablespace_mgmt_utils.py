@@ -1,6 +1,8 @@
 import pipes
 import tempfile
 import os
+import time
+from contextlib import closing
 
 from behave import given, then
 from pygresql import pg
@@ -127,6 +129,13 @@ class Tablespace:
                             "Expected pre-gpexpand data:\n%\n but found post-gpexpand data:\n%r" % (
                                 sorted(self.initial_data), sorted(data)))
 
+    def insert_more_data(self):
+        with closing(dbconn.connect(dbconn.DbURL(dbname=self.dbname), unsetSearchPath=False)) as conn:
+            dbconn.execSQL(conn, "CREATE TABLE tbl_1 (i int) DISTRIBUTED RANDOMLY")
+            dbconn.execSQL(conn, "INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
+            dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
+            dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
+
 
 def _checkpoint_and_wait_for_replication_replay(db):
     """
@@ -243,3 +252,8 @@ def impl(context):
     for tablespace in context.tablespaces.values():
         tablespace.cleanup()
     context.tablespaces = {}
+
+@given('insert additional data into the tablespace')
+def impl(context):
+    context.tablespaces["outerspace"].insert_more_data()
+

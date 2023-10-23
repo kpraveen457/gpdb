@@ -204,7 +204,8 @@ class DifferentialRecovery(Command):
         # os.path.join(dir, "") will append a '/' at the end of dir. When using "/" at the end of source,
         # rsync will copy the content of the last directory. When not using "/" at the end of source, rsync
         # will copy the last directory and the content of the directory.
-        cmd = Rsync(name="Sync pg data_dir", srcFile=os.path.join(self.recovery_info.source_datadir, ""),
+        cmd = Rsync(name='Syncing pg_data of dbid {}'.format(self.recovery_info.target_segment_dbid),
+                    srcFile=os.path.join(self.recovery_info.source_datadir, ""),
                     dstFile=self.recovery_info.target_datadir,
                     srcHost=self.recovery_info.source_hostname, exclude_list=rsync_exclude_list,
                     delete=True, checksum=True, progress=True, progress_file=self.recovery_info.progress_file)
@@ -253,7 +254,7 @@ class DifferentialRecovery(Command):
         # os.path.join(dir, "") will append a '/' at the end of dir. When using "/" at the end of source,
         # rsync will copy the content of the last directory. When not using "/" at the end of source, rsync
         # will copy the last directory and the content of the directory.
-        cmd = Rsync(name="Sync pg_xlog files", srcFile=os.path.join(self.recovery_info.source_datadir, "pg_xlog", ""),
+        cmd = Rsync(name="Syncing pg_xlog files of dbid {}".format(self.recovery_info.target_segment_dbid), srcFile=os.path.join(self.recovery_info.source_datadir, "pg_xlog", ""),
                     dstFile=os.path.join(self.recovery_info.target_datadir, "pg_xlog", ""), progress=True, checksum=True,
                     srcHost=self.recovery_info.source_hostname,
                     progress_file=self.recovery_info.progress_file)
