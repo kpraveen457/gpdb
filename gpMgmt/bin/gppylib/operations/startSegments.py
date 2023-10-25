@@ -121,8 +121,8 @@ class StartSegmentsOperation:
                 mirrorDbs = [seg for seg in segments if seg.isSegmentMirror(True)]
                 primaryDbs = [seg for seg in segments if seg.isSegmentPrimary(True)]
 
-                self.__runStartCommand(mirrorDbs, startMethod, numContentsInCluster, result, gpArray, era)
                 self.__runStartCommand(primaryDbs, startMethod, numContentsInCluster, result, gpArray, era)
+                self.__runStartCommand(mirrorDbs, startMethod, numContentsInCluster, result, gpArray, era)
 
             elif startMethod == START_AS_MIRRORLESS:
                 # bring them up in mirrorless mode
