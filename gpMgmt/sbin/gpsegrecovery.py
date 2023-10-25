@@ -302,7 +302,7 @@ class DifferentialRecovery(Command):
                 # os.path.join(dir, "") will append a '/' at the end of dir. When using "/" at the end of source,
                 # rsync will copy the content of the last directory. When not using "/" at the end of source, rsync
                 # will copy the last directory and the content of the directory.
-                cmd = Rsync(name="Sync tablespace",
+                cmd = Rsync(name="Syncing tablespace of dbid {0} for oid {1}" .format(self.recovery_info.target_segment_dbid, str(oid),
                             srcFile=os.path.join(srcPath, ""),
                             dstFile=targetPath,
                             srcHost=self.recovery_info.source_hostname,
