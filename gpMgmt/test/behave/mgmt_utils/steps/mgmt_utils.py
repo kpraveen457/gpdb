@@ -4362,6 +4362,7 @@ def impl(context, logdir, stage):
     while attempt < num_retries:
         attempt += 1
         if os.path.exists(recovery_progress_file):
+            print("inside path exist")
             if verify_elements_in_file(recovery_progress_file, stage_patterns):
                 return
         time.sleep(0.1)
@@ -4370,8 +4371,10 @@ def impl(context, logdir, stage):
 
 
 def verify_elements_in_file(filename, elements):
+    print("inside verify")
     with open(filename, 'r') as file:
         content = file.read()
+        print(content)
         for element in elements:
             if element not in content:
                 return False
