@@ -47,7 +47,7 @@ Feature: gprecoverseg tests
           And the segments are synchronized
           And the cluster is rebalanced
 
-    @concourse_cluster
+    @concourse_cluster @test_1
     Scenario: gpstate track of differential recovery for single host
       Given the database is running
       And all files in gpAdminLogs directory are deleted on all hosts in the cluster
@@ -71,7 +71,7 @@ Feature: gprecoverseg tests
       And the cluster is rebalanced
 
 
-    @concourse_cluster
+    @concourse_cluster @test_2
     Scenario: check Tablespace Recovery Progress with gpstate
        Given the database is running
       And all files in gpAdminLogs directory are deleted on all hosts in the cluster
