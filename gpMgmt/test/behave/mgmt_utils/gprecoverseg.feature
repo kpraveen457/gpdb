@@ -80,13 +80,14 @@ Feature: gprecoverseg tests
       And a tablespace is created with data
       And insert additional data into the tablespace
       When the user asynchronously runs "gprecoverseg -av --differential" and the process is saved
+      Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies its format
       Then the user waits until recovery_progress.file is created in gpAdminLogs and verifies that all dbids progress with tablespace are present
       When the user runs "gpstate -e"
       Then gpstate should print "Segments in recovery" to stdout
       And gpstate output contains "differential" entries for mirrors of content 0
           And gpstate output looks like
               | Segment | Port   | Recovery type  | Stage                                      | Completed bytes \(kB\) | Percentage completed |
-              | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 6 for oid       | ([\d,]+)[ \t]          | \d+%                 |
+              | \S+     | [0-9]+ | differential   | Syncing tablespace of dbid 6 for oid \d+   | ([\d,]+)[ \t]          | \d+%                 |
       And the user waits until saved async process is completed
       And all files in gpAdminLogs directory are deleted on all hosts in the cluster
       And the cluster is rebalanced

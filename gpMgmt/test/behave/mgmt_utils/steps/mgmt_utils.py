@@ -4353,6 +4353,7 @@ def impl(context, logdir, stage):
         else:
             pat = "differential:{}" .format(dbid)
         stage_patterns.append(pat)
+    print(stage_patterns)
     if len(stage_patterns) == 0:
         raise Exception('Failed to get the details of down segment')
     attempt = 0
