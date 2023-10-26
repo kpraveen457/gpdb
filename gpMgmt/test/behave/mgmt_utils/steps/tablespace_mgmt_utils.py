@@ -130,13 +130,12 @@ class Tablespace:
                                 sorted(self.initial_data), sorted(data)))
 
     def insert_more_data(self):
-        with closing(dbconn.connect(dbconn.DbURL(dbname=self.dbname), unsetSearchPath=False)) as conn:
-            dbconn.execSQL(conn, "CREATE TABLE tbl_1 (i int) DISTRIBUTED RANDOMLY")
-            dbconn.execSQL(conn, "INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
-            dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
-            dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
-            dbconn.execSQL(conn, "CREATE TABLE tbl_3 (i int) DISTRIBUTED RANDOMLY")
-            dbconn.execSQL(conn, "INSERT INTO tbl_3 VALUES (GENERATE_SERIES(0, 100000000))")
+        with dbconn.connect(dbconn.DbURL(dbname=self.dbname), unsetSearchPath=False) as conn:
+            db = pg.DB(conn)
+            db.query("CREATE TABLE tbl_1 (i int) DISTRIBUTED RANDOMLY")
+            db.query("INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
+            db.query("CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
+            db.query("INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
 
 
 def _checkpoint_and_wait_for_replication_replay(db):
