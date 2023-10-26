@@ -135,6 +135,8 @@ class Tablespace:
             dbconn.execSQL(conn, "INSERT INTO tbl_1 VALUES (GENERATE_SERIES(0, 100000000))")
             dbconn.execSQL(conn, "CREATE TABLE tbl_2 (i int) DISTRIBUTED RANDOMLY")
             dbconn.execSQL(conn, "INSERT INTO tbl_2 VALUES (GENERATE_SERIES(0, 100000000))")
+            dbconn.execSQL(conn, "CREATE TABLE tbl_3 (i int) DISTRIBUTED RANDOMLY")
+            dbconn.execSQL(conn, "INSERT INTO tbl_3 VALUES (GENERATE_SERIES(0, 100000000))")
 
 
 def _checkpoint_and_wait_for_replication_replay(db):

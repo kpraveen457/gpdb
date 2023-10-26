@@ -308,7 +308,7 @@ class DifferentialRecovery(Command):
                             srcHost=self.recovery_info.source_hostname,
                             progress=True,
                             checksum=True,
-                            progress_file=self.recovery_info.progress_file)
+                            progress_file="/tmp/tablespace_progress.out")
                 cmd.run(validateAfter=True)
 
             # create tablespace symlink for target data directory.
