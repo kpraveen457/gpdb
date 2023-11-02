@@ -196,8 +196,8 @@ Feature: gpstart behave tests
     @concourse_cluster
     Scenario: gpstart with batch size is less than the number of segments host
         Given the database is not running
-          And the user runs "gpstart -a -B 1"
-          And "gpstart -a -B 1" should return a return code of 0
-          Then gpcheckcat should not print "Number of segments which failed to start:.*" to stdout
+         When the user runs "gpstart -a -B 1"
+         Then "gpstart -a -B 1" should return a return code of 0
+          And gpcheckcat should not print "Number of segments which failed to start:.*" to stdout
 
 
