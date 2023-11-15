@@ -1974,7 +1974,11 @@ jobs:
               SUDO_ACCESS_ON_HOSTS: 1
               SUDO_CDW_USERNAME: [[ os_username ]]
               {% endif %}
+              {% if os_type == "centos6" %}
+              BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=concourse_cluster --tags=~ignore_for_centos6
+              {% else %}
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=concourse_cluster
+              {% endif %}
               [[ test.env ]]
             on_success:
               <<: *ccp_destroy
@@ -1989,7 +1993,11 @@ jobs:
             file: gpdb_src/concourse/tasks/behave_gpdb.yml
             image: gpdb6-[[ os_type ]]-test
             params:
+              {% if os_type == "centos6" %}
+              BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=~concourse_cluster,demo_cluster --tags=~ignore_for_centos6
+              {% else %}
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=~concourse_cluster,demo_cluster
+              {% endif %}
               [[ test.env ]]
 {% endfor %}
 

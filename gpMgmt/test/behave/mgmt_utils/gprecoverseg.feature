@@ -1,6 +1,7 @@
 @gprecoverseg
 Feature: gprecoverseg tests
 
+    @ignore_for_centos6
     Scenario Outline: <scenario> recovery works with tablespaces
         Given the database is running
           And user stops all primary processes
@@ -31,6 +32,7 @@ Feature: gprecoverseg tests
 
     @demo_cluster
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: differential recovery runs successfully
         Given the database is running
           And the segments are synchronized
@@ -47,6 +49,7 @@ Feature: gprecoverseg tests
           And the segments are synchronized
           And the cluster is rebalanced
 
+    @ignore_for_centos6
     Scenario: differential recovery shows error message if run with the wrong argument
       Given the database is running
         And user stops all primary processes
@@ -73,6 +76,7 @@ Feature: gprecoverseg tests
 
     @demo_cluster
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: Differential recovery succeeds if previous incremental recovery failed
         Given the database is running
           And user stops all primary processes
@@ -90,6 +94,7 @@ Feature: gprecoverseg tests
 
     @demo_cluster
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: Differential recovery succeeds if previous full recovery failed
         Given the database is running
           And user stops all primary processes
@@ -111,6 +116,7 @@ Feature: gprecoverseg tests
           And the cluster is rebalanced
 
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: gpstate track of differential recovery for single host
       Given the database is running
       And all files in gpAdminLogs directory are deleted on all hosts in the cluster
@@ -135,6 +141,7 @@ Feature: gprecoverseg tests
 
 
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: check Tablespace Recovery Progress with gpstate
        Given the database is running
       And all files in gpAdminLogs directory are deleted on all hosts in the cluster
@@ -193,6 +200,7 @@ Feature: gprecoverseg tests
         | -B 2 -b 1 |  2             |  1              |
         | -B 1 -b 2 |  1             |  2              |
 
+    @ignore_for_centos6
     Scenario: Differential recovery limits number of parallel processes correctly
         Given the database is running
         And user immediately stops all primary processes for content 0,1,2
@@ -260,6 +268,7 @@ Feature: gprecoverseg tests
         And the segments are synchronized
         And check segment conf: postgresql.conf
 
+  @ignore_for_centos6
   Scenario Outline: gprecoverseg <scenario> recovery displays pg_controldata success info
         Given the database is running
         And all the segments are running
@@ -369,6 +378,7 @@ Feature: gprecoverseg tests
           And all the segments are running
           And the segments are synchronized
 
+    @ignore_for_centos6
     Scenario: gprecoverseg differential recovery displays rsync progress to the user
         Given the database is running
         And all the segments are running
@@ -391,6 +401,7 @@ Feature: gprecoverseg tests
         And verify replication slot internal_wal_replication_slot is available on all the segments
         And check segment conf: postgresql.conf
 
+  @ignore_for_centos6
   Scenario: gprecoverseg does not display rsync progress to the user when --no-progress option is specified
         Given the database is running
         And all the segments are running
@@ -690,6 +701,7 @@ Feature: gprecoverseg tests
 # The @concourse_cluster tag denotes the scenario that requires a remote cluster
     @demo_cluster
     @concourse_cluster
+    @ignore_for_centos6
     Scenario Outline: <scenario> recovery skips unreachable segments
       Given the database is running
       And all the segments are running
@@ -730,6 +742,7 @@ Feature: gprecoverseg tests
         | full         | -aF                |
 
   @concourse_cluster
+  @ignore_for_centos6
   Scenario Outline: <scenario> incremental recovery works with tablespaces on a multi-host environment
     Given the database is running
     And user stops all primary processes
@@ -891,6 +904,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg creates recovery_progress.file in gpAdminLogs for differential recovery of mirrors
     Given the database is running
     And all files in gpAdminLogs directory are deleted on all hosts in the cluster
@@ -959,6 +973,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario:  SIGINT on gprecoverseg differential recovery should delete the progress file
     Given the database is running
     And all the segments are running
@@ -1040,6 +1055,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg incremental recovery segments come up even if one rewind fails
     Given the database is running
     And all the segments are running
@@ -1065,6 +1081,7 @@ Feature: gprecoverseg tests
     And the row count from table "test_recoverseg" in "postgres" is verified against the saved data
 
   @demo_cluster
+  @ignore_for_centos6
   Scenario Outline: gprecoverseg differential recovery segments come up even if recovery for one segment fails
     Given the database is running
     And all the segments are running
@@ -1408,6 +1425,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg differential recovery gives warning if any of the failed segment's source is in backup already
     Given the database is running
     And all the segments are running
@@ -1429,6 +1447,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg differential recovery gives warning if some of the failed segment's source is in backup already
     Given the database is running
     And all the segments are running
@@ -1450,6 +1469,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg differential recovery gives warning if all of the failed segment's source is in backup already
     Given the database is running
     And all the segments are running
@@ -1475,6 +1495,7 @@ Feature: gprecoverseg tests
         And the information of a "mirror" segment on a remote host is saved
 
     @concourse_cluster
+    @ignore_for_centos6
     Scenario Outline: When gprecoverseg <scenario> recovery is executed and an existing postmaster.pid on the killed primary segment corresponds to a non postgres process
         Given the database is running
         And all the segments are running
@@ -1582,6 +1603,7 @@ Feature: gprecoverseg tests
         Then the saved primary segment reports the same value for sql "show data_checksums" db "template1" as was saved
 
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: gprecoverseg should use the same setting for data_checksums for a differential recovery
         Given the database is running
         And results of the sql "show data_checksums" db "template1" are stored in the context
@@ -1992,6 +2014,7 @@ Feature: gprecoverseg tests
 
     @remove_rsync_bash
     @concourse_cluster
+    @ignore_for_centos6
     Scenario: None of the accumulated wal (after running pg_start_backup and before copying the pg_control file) is lost during differential
       Given the database is running
         And all the segments are running
@@ -2014,6 +2037,7 @@ Feature: gprecoverseg tests
 
   @demo_cluster
   @concourse_cluster
+  @ignore_for_centos6
   Scenario: Cleanup orphaned directory of dropped database after differential recovery
       Given the database is running
         And all the segments are running
